@@ -10,26 +10,19 @@ const date = ref<string>(currentDate())
 
 const { asteroids, getAsteroids } = useNasaStore();
 
-const onDateChange = async (e: Event) => {
+const fetchAsteroids = async (date: string) => {
   try {
     loading.value += 1;
-    await getAsteroids((e.target as HTMLInputElement).value)
+    await getAsteroids(date);
   } catch (error) {
     console.warn(error);
   } finally {
     loading.value -= 1;
   }
-};
+}
 
 onBeforeMount(async () => {
-  try {
-    loading.value += 1;
-    await getAsteroids(currentDate());
-  } catch (error) {
-    console.warn(error);
-  } finally {
-    loading.value -= 1;
-  }
+  fetchAsteroids(currentDate())
 });
 </script>
 
@@ -37,12 +30,12 @@ onBeforeMount(async () => {
   <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-6">
     <div>
       <p class="text-3xl font-bold">
-        Asteroids which missed earth at 
+        Asteroids near to earth on 
         <input
           v-model="date"
           type="date"
           class="text-red-400"
-          @change="onDateChange"
+          @change="(e) => fetchAsteroids((e.target as HTMLInputElement).value)"
         >
       </p>
       <p class="text-gray-400 mt-2 mb-5">
